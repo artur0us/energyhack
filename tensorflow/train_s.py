@@ -1,7 +1,7 @@
 import tensor
 
-tensor.initialize(4, 10, 1, 'sun')
+tensor.initialize('solar')
 
-#tensor.restore()
+tensor.restore()
 
-tensor.train(0.05, 1000000, 10000)
+tensor.train(0.0005, 50000, 1000)

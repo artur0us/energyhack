@@ -1,8 +1,8 @@
 import tensor
 
-tensor.initialize(5, 10, 1, 'wind')
+tensor.initialize('wind')
 
-tensor.restore()
+#tensor.restore()
 
 tensor.test()
 

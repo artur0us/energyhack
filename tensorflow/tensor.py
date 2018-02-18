@@ -2,6 +2,8 @@ import os
 import tensorflow as tf
 import time
 import csv
+import matplotlib.pyplot as plt
+import math
 
 mod = None
 
@@ -23,24 +25,29 @@ cost = None
 saver = None
 sess = None
 
-def initialize(INPUT, HIDDEN, OUTPUT, MOD):
+def initialize(MOD):
 	global mod
 	mod = MOD
 
+	INPUT = 0
+	HIDDEN = 4
+	OUTPUT = 1
+
 	global NUM_EXAMPLES
-	with open(mod + '_dataset.csv', 'r') as csvfile:
+	with open('normalized_' + mod + '_dataset.csv', 'r') as csvfile:
 	    input_data = csv.reader(csvfile, delimiter = ';')
 	    for row in input_data:
+	    	INPUT = len(row) - 1
 	    	NUM_EXAMPLES += 1
 	    	trainx_row = []
 	    	for i in range(INPUT):
 	    		trainx_row.append(float(row[i]))
 	    	trainx.append(trainx_row)
 	        trainy.append([float(row[INPUT])])
-
 	        # print trainx
 	        # print trainy
 
+	print INPUT
 	print NUM_EXAMPLES
 
 	global x
@@ -49,8 +56,8 @@ def initialize(INPUT, HIDDEN, OUTPUT, MOD):
 	y = tf.placeholder(tf.float32, shape = [NUM_EXAMPLES, OUTPUT], name = 'labels')
 
 	# Define weights
-	weights1 = tf.Variable(tf.random_uniform([INPUT, HIDDEN], -1.0, 1.0), name = "weights1")
-	weights2 = tf.Variable(tf.random_uniform([HIDDEN, OUTPUT], -1.0, 1.0), name = "weights2")
+	weights1 = tf.Variable(tf.random_normal([INPUT, HIDDEN]), name = "weights1")
+	weights2 = tf.Variable(tf.random_normal([HIDDEN, OUTPUT]), name = "weights2")
 
 	# Define the BIAS node
 	bias1 = tf.Variable(tf.zeros([HIDDEN]), name = "bias1")
@@ -58,11 +65,11 @@ def initialize(INPUT, HIDDEN, OUTPUT, MOD):
 
 	global h1
 	# Feed forward to the hidden layer
-	h1 = tf.sigmoid(tf.matmul(x, weights1) + bias1)
+	h1 = tf.nn.relu(tf.matmul(x, weights1) + bias1)
 
 	global hypothesis
 	# Feedforward to the output layer - hypothesis is what the neural network thinks it should output for a given input.
-	hypothesis = tf.sigmoid(tf.matmul(h1, weights2) + bias2)
+	hypothesis = tf.nn.relu(tf.matmul(h1, weights2) + bias2)
 
 	global cost
 	# Setup the cost function and set the traning method
@@ -93,13 +100,18 @@ def test():
 	hp, ct = sess.run([hypothesis, cost], feed_dict = {x: trainx, y: trainy})
 	t_end = time.clock()
 
-	# print("Hypothesis Target Error")
-	# for i in range(len(hp)):
-	# 	hyp_error = abs(hp[i] - trainy[i])
-	# 	print(hp[i][0], trainy[i][0], hyp_error[0])
+	result = []
+	expects = []
+	print("Hypothesis Target Error")
+	for i in range(len(hp)):
+		result.append(math.sqrt(hp[i][0]))
+		expects.append(math.sqrt(trainy[i][0]))
+
+	plt.plot(result, 'r-', linewidth = 0.3)
+	plt.plot(expects, 'b-', linewidth = 0.3)
+	plt.show()
 
 	print('Cost: ', ct)
-
 	print('Elapsed time: ', t_end - t_start)
 
 def train(rate, epochs, outputInterval):
@@ -114,7 +126,11 @@ def train(rate, epochs, outputInterval):
 		if i % outputInterval == 0:
 			print('\n')
 			print('Epoch ', i)
-			test()
+			hp, ct = sess.run([hypothesis, cost], feed_dict = {x: trainx, y: trainy})
+			t_end = time.clock()
+
+			print('Cost: ', ct)
+			print('Elapsed time: ', t_end - t_start)
 
 	t_end = time.clock()
 
