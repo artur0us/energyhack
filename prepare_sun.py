@@ -2,43 +2,41 @@ import csv
 from datetime import datetime
 from itertools import izip
 
-RADIATION_RAW = "rawdata/radiation.csv"
-GENERATION_RAW = "rawdata/generation.csv"
+DATA = "wind_dataset.csv"
 
-PREPARED_DATA = "tensorflow/sun_dataset.csv"
+data = csv.reader(open(DATA, "rb"), delimiter = ';')
+transposed = izip(*raw)
 
-raw = csv.reader(open(RADIATION_RAW, "rb"), delimiter = ';')
-transposed_raw = izip(*raw)
-
-transposed_prepared = []
-
-for i, row in enumerate(transposed_raw):
-	data_row = []
-	
-	for j, item in enumerate(row):
-		data_row.append(float(item))
-
-	transposed_prepared.append(data_row)
-
-generation = (csv.reader(open(GENERATION_RAW, "rb"), delimiter = ';'))
-data_row = []
-for i, row in enumerate(generation):
-	datetime_object = datetime.strptime(row[0], '%d.%m.%Y %H:%M')
-	data_row.append(row[1].replace(',', '.'))
-
-transposed_prepared.append(data_row)
-
-# for row in transposed_prepared:
-# 	max_item = 0.0
-# 	for item in row:
-# 		a = abs(float(item))
-# 		if a > max_item:
-# 			max_item = a
-# 	print max_item
-# 	for i, item in enumerate(row):
-# 		row[i] = float(item) / max_item  
+for row in transposed:
+	max_item = 0.0
+	for item in row:
+		a = abs(float(item))
+		if a > max_item:
+			max_item = a
+	print max_item
+	for i, item in enumerate(row):
+		row[i] = float(item) / max_item  
 
 
-prepared = izip(*transposed_prepared)
+normalized = izip(*transposed)
 
-csv.writer(open(PREPARED_DATA, "wb"), delimiter = ';').writerows(prepared)
+csv.writer(open(DATA, "wb"), delimiter = ';').writerows(normalized)
+
+DATA = "solar_dataset.csv"
+
+data = csv.reader(open(DATA, "rb"), delimiter = ';')
+transposed = izip(*raw)
+
+for row in transposed:
+	max_item = 0.0
+	for item in row:
+		a = abs(float(item))
+		if a > max_item:
+			max_item = a
+	print max_item
+	for i, item in enumerate(row):
+		row[i] = float(item) / max_item  
+
+normalized = izip(*transposed)
+
+csv.writer(open('normalized_' + DATA, "wb"), delimiter = ';').writerows(normalized)
