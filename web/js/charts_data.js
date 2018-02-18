@@ -68,14 +68,14 @@ var ChartsData = {
 					display: true,
 					scaleLabel: {
 						display: true,
-						labelString: 'Month'
+						labelString: 'Дата'
 					}
 				}],
 				yAxes: [{
 					display: true,
 					scaleLabel: {
 						display: true,
-						labelString: 'Value'
+						labelString: 'Потребление'
 					}
 				}]
 			}

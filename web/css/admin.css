@@ -4,6 +4,10 @@ html, body {
 	font-family: 'Roboto', sans-serif;
 }
 
-#MainBlock {
-	
+#MainElem {
+	display: block;
+}
+
+#SettingsElem {
+	display: none;
 }

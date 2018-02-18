@@ -26,16 +26,16 @@
 				</div>
 				<div class="collapse navbar-collapse" id="myNavbar">
 					<ul class="nav navbar-nav">
-						<li class="active"><a>Главная</a></li>
-						<li><a>Далее</a></li>
+						<li class="active"><a class="NavbarBtn" id="NavbarMainBtn" style="cursor: pointer;">Главная</a></li>
+						<li><a class="NavbarBtn" id="NavbarSettingsBtn" style="cursor: pointer;">Настройки</a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">
-						<li><a><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
+						<li><a class="NavbarBtn" id="NavbarLogoutBtn" style="cursor: pointer;"><span class="glyphicon glyphicon-log-out"></span> Выход</a></li>
 					</ul>
 				</div>
 			</div>
 		</nav>
-		<div class="container-fluid">
+		<div id="MainElem" class="container-fluid">
 			<div class="row">
 				<div class="col-sm-3">
 					<img src="img/1.jpg" class="img-responsive">
@@ -46,31 +46,39 @@
 							<tbody>
 								<tr>
 									<td>ФИО:</td>
-									<td>Петров Пётр Петрович</td>
+									<td id="Info_FullNameText"></td>
 								</tr>
 								<tr>
 									<td>Дата рождения:</td>
-									<td>14.04.1982</td>
+									<td id="Info_BirthDateText"></td>
 								</tr>
 								<tr>
 									<td>Город:</td>
-									<td>Казань</td>
+									<td id="Info_CityText"></td>
 								</tr>
 								<tr>
 									<td>Адрес:</td>
-									<td>ул.Подлесная,д.4</td>
+									<td id="Info_AddressText"></td>
 								</tr>
 								<tr>
-									<td>Потребление/месяц:</td>
-									<td>100 кВт/ч</td>
+									<td>Потреблено за месяц:</td>
+									<td id="Info_MonthText"></td>
 								</tr>
 								<tr>
 									<td>Сэкономлено:</td>
-									<td>13270 руб. 53 коп.</td>
+									<td id="Info_ProfitText"></td>
 								</tr>
 								<tr>
 									<td>Автооплата:</td>
-									<td>не подключено</td>
+									<td id="Info_AutoPayText"></td>
+								</tr>
+								<tr>
+									<td>Задолженность:</td>
+									<td id="Info_BalanceText"></td>
+								</tr>
+								<tr>
+									<td>Тариф:</td>
+									<td id="Info_TarifText"></td>
 								</tr>
 							</tbody>
 						</table>
@@ -90,9 +98,36 @@
 						<canvas id="StepSize2ChartCanvas">Error</canvas>
 					</center>
 				</div>
-				<div class="col-sm-5"></div>
+				<div class="col-sm-5">
+					<br><br><br><br><br>
+					<center>
+						<button class="btn btn-success btn-lg">Оплата</button>
+						<br><br><br>
+						<button class="btn btn-warning btn-lg">Автооплата</button>
+						<br><br><br>
+						<button class="btn btn-danger btn-lg">Предсказания</button>
+					</center>
+				</div>
 			</div>
 			<br><br><br>
+		</div>
+		<div id="SettingsElem" class="container-fluid">
+			<div class="panel panel-primary">
+				<div class="panel-heading">Настройки</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<label>Старый пароль:</label>
+						<input id="OldLoginInput" type="text" class="form-control">
+					</div>
+					<div class="form-group">
+						<label>Новый пароль:</label>
+						<input id="NewPasswordInput" type="password" class="form-control">
+					</div>
+					<div class="form-group">
+						<button id="ChangePasswordBtn" class="btn btn-danger">Изменить</button>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </body>
@@ -100,5 +135,23 @@
 <script src="js/admin.js"></script>
 <script>
 	Admin.checkAuth();
+
+	$("#NavbarMainBtn").click(function() {
+		$(".NavbarBtn").parent().removeClass("active");
+		$(this).parent().addClass("active");
+		$("#SettingsElem").hide();
+		$("#MainElem").show();
+	});
+	$("#NavbarSettingsBtn").click(function() {
+		$(".NavbarBtn").parent().removeClass("active");
+		$(this).parent().addClass("active");
+		$("#MainElem").hide();
+		$("#SettingsElem").show();
+	});
+	$("#NavbarLogoutBtn").click(function() {
+		Cookies.remove("login");
+		Cookies.remove("password");
+		window.location.href = "/";
+	});
 </script>
 </html>

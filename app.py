@@ -21,12 +21,28 @@ def ws_adminPage():
 # -- API routes
 @serverApp.route("/api/checkAuth")
 def ws_checkAuth():
+	if localAPI_checkAuth(request.args.get("login"), request.args.get("password")):
+		return "ok"
+	else:
+		return "error"
+
+@serverApp.route("/api/getInfo")
+def ws_getInfo():
+	if localAPI_checkAuth(request.args.get("login"), request.args.get("password")):
+		accountDatabase = json.load(open("db/accounts.json"))["Users"]
+		for i in range(0, len(accountDatabase)):
+			if accountDatabase[i][0] == request.args.get("login"):
+				return json.dumps([accountDatabase[i][2], json.load(open("db/balance.json"))])
+	else:
+		return "error"
+
+def localAPI_checkAuth(myLogin, myPassword):
 	accountDatabase = json.load(open("db/accounts.json"))["Users"]
 	for i in range(0, len(accountDatabase)):
-		if accountDatabase[i][0] == request.args.get("login"):
-			if accountDatabase[i][1] == request.args.get("password"):
-				return "ok"
-	return "error"
+		if accountDatabase[i][0] == myLogin:
+			if accountDatabase[i][1] == myPassword:
+				return True
+	return False
 
 def startWebServer():
 	print("[i] Starting web server...")
